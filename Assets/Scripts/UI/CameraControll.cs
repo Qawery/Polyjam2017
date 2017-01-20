@@ -17,26 +17,26 @@ public class CameraControll : MonoBehaviour
         Vector2 movementVector = new Vector2(Input.GetAxis("Horizontal") * Time.deltaTime * movementSpeed, Input.GetAxis("Vertical") * Time.deltaTime * movementSpeed);
 
         Vector3 newPosition = new Vector3(transform.position.x + movementVector.x, transform.position.y, transform.position.z + movementVector.y);
-        if (newPosition.x > GameplayManager.getInstance().cameraBounds.getEastBound())
+        if (newPosition.x > GameplayManager.GetInstance().cameraBounds.GetEastBound())
         {
-            newPosition.x = GameplayManager.getInstance().cameraBounds.getEastBound();
+            newPosition.x = GameplayManager.GetInstance().cameraBounds.GetEastBound();
         }
-        else if (newPosition.x < GameplayManager.getInstance().cameraBounds.getWestBound())
+        else if (newPosition.x < GameplayManager.GetInstance().cameraBounds.GetWestBound())
         {
-            newPosition.x = GameplayManager.getInstance().cameraBounds.getWestBound();
+            newPosition.x = GameplayManager.GetInstance().cameraBounds.GetWestBound();
         }
-        if (newPosition.z > GameplayManager.getInstance().cameraBounds.getNorthBound())
+        if (newPosition.z > GameplayManager.GetInstance().cameraBounds.GetNorthBound())
         {
-            newPosition.z = GameplayManager.getInstance().cameraBounds.getNorthBound();
+            newPosition.z = GameplayManager.GetInstance().cameraBounds.GetNorthBound();
         }
-        else if (newPosition.z < GameplayManager.getInstance().cameraBounds.getSouthBound())
+        else if (newPosition.z < GameplayManager.GetInstance().cameraBounds.GetSouthBound())
         {
-            newPosition.z = GameplayManager.getInstance().cameraBounds.getSouthBound();
+            newPosition.z = GameplayManager.GetInstance().cameraBounds.GetSouthBound();
         }
         transform.position = newPosition;
     }
 
-    public Camera getCamera()
+    public Camera GetCamera()
     {
         return cameraComponent;
     }

@@ -18,7 +18,7 @@ public class GameplayManager : MonoBehaviour
         Assert.IsNotNull(cameraBounds, "Missing cameraBounds");
     }
 
-    public static GameplayManager getInstance()
+    public static GameplayManager GetInstance()
     {
         Assert.IsNotNull(instance, "Trying to access GameplayManager instance before initialization.");
         return instance;

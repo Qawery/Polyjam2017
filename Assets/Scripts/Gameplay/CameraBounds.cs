@@ -15,22 +15,22 @@ public class CameraBounds : MonoBehaviour
         Assert.IsNotNull(boundsCollider, "Missing boundsCollider");
     }
 
-    public float getNorthBound()
+    public float GetNorthBound()
     {
         return northBound;
     }
 
-    public float getSouthBound()
+    public float GetSouthBound()
     {
         return southBound;
     }
 
-    public float getWestBound()
+    public float GetWestBound()
     {
         return westBound;
     }
 
-    public float getEastBound()
+    public float GetEastBound()
     {
         return eastBound;
     }
