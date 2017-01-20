@@ -1,8 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 public class CameraControll : MonoBehaviour
 {
+    private Camera cameraComponent;
     public float movementSpeed = 0.5f;
+
+    public void Awake()
+    {
+        cameraComponent = GetComponent<Camera>();
+        Assert.IsNotNull(cameraComponent, "Missing cameraComponent");
+    }
 
     public void LateUpdate()
     {
@@ -26,5 +34,10 @@ public class CameraControll : MonoBehaviour
             newPosition.z = GameplayManager.getInstance().cameraBounds.getSouthBound();
         }
         transform.position = newPosition;
+    }
+
+    public Camera getCamera()
+    {
+        return cameraComponent;
     }
 }
