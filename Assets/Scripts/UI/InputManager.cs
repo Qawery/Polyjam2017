@@ -8,7 +8,6 @@ public enum UnitOrders
 
 public class InputManager : MonoBehaviour
 {
-    private float overlapRadius = 0.1f;
     private List<AgentAI> selectedUnits;
     private UnitOrders unitOrder;
 
@@ -49,21 +48,21 @@ public class InputManager : MonoBehaviour
     {
         if (selectedUnits.Count > 0)
         {
-            if (Input.GetKeyDown("Z"))
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                //move
+                unitOrder = UnitOrders.Move;
             }
-            else if (Input.GetKeyDown("X"))
+            else if (Input.GetKeyDown(KeyCode.X))
             {
-                //attack
+                unitOrder = UnitOrders.Attack;
             }
-            else if (Input.GetKeyDown("C"))
+            else if (Input.GetKeyDown(KeyCode.C))
             {
-                //stop
+                StopUnits();
             }
-            else if (Input.GetKeyDown("V"))
+            else if (Input.GetKeyDown(KeyCode.V))
             {
-                //patrol
+                unitOrder = UnitOrders.Patrol;
             }
         }
         else
@@ -77,7 +76,6 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("LMB hit");
             if(selectedUnits.Count > 0)
             {
                 if(unitOrder == UnitOrders.None)
@@ -102,13 +100,14 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("LMB_S hit");
-            /**/
-        }
-        else
-        {
-            print("LMB_S miss");
-            /**/
+            if (unitOrder == UnitOrders.None)
+            {
+                TryToSelect(rayResult);
+            }
+            else
+            {
+                //TODO kolejkowanie rozkazów
+            }
         }
     }
 
@@ -117,13 +116,7 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("RMB hit");
-            /**/
-        }
-        else
-        {
-            print("RMB miss");
-            /**/
+            //TODO Wykonanie rozkazu domyślnego
         }
     }
 
@@ -132,13 +125,7 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("RMB_S hit");
-            /**/
-        }
-        else
-        {
-            print("RMB_S miss");
-            /**/
+            //TODO kolejkowanie rozkazu domyślnego
         }
     }
 
@@ -185,7 +172,7 @@ public class InputManager : MonoBehaviour
             return false;
         }
     }
-
+    
     private bool ExecuteOrder(KeyValuePair<bool, RaycastHit> rayResult)
     {
         //TODO wykonanie bieżącego rozkazu w kontekscie reyResult
@@ -209,6 +196,14 @@ public class InputManager : MonoBehaviour
         foreach(AgentAI agent in selectedUnits)
         {
             agent.GoToDestination(newDestination);
+        }
+    }
+
+    private void StopUnits()
+    {
+        foreach (AgentAI agent in selectedUnits)
+        {
+            agent.Idle();
         }
     }
 }

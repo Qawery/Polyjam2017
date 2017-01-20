@@ -10,18 +10,16 @@ public enum AgentInternalState
 public class AgentAI : AgentDefault
 {
     private NavMeshAgent navMeshAgent;
-    private TurretAI turret;
 
     private AgentInternalState state;
     private Vector3 destination;
-    private AgentDefault target;
 
     public override void Awake()
     {
         base.Awake();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Assert.IsNotNull(navMeshAgent, "Missing navMeshAgent");
-        turret = GetComponent<TurretAI>();
+        //turret = GetComponent<TurretAI>();
         //Assert.IsNotNull(turret, "Missing turret.");
         Idle();
     }
@@ -84,6 +82,7 @@ public class AgentAI : AgentDefault
     public void Idle()
     {
         destination = transform.position;
+        navMeshAgent.SetDestination(destination);
         state = AgentInternalState.Idle;
     }
 
@@ -96,7 +95,7 @@ public class AgentAI : AgentDefault
 
     public void AttackTarget(AgentDefault newTarget)
     {
-        target = newTarget;
+        //target = newTarget;
         state = AgentInternalState.AttackTarget;
     }
 

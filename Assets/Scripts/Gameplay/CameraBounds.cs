@@ -4,15 +4,29 @@ using UnityEngine.Assertions;
 public class CameraBounds : MonoBehaviour
 {
     public BoxCollider boundsCollider;
-    private float northBound = 5f;
-    private float southBound = -5f;
-    private float eastBound = 5f;
-    private float westBound = -5f;
+    private float northBound;
+    private float southBound;
+    private float eastBound;
+    private float westBound;
 
-    public void Awake()
+    public void Start()
     {
-        //TODO wyliczyć na podstawie collidera
         Assert.IsNotNull(boundsCollider, "Missing boundsCollider");
+        print("");
+        northBound = transform.position.z + ((boundsCollider.size.z*transform.localScale.z) / 2) - GameplayManager.GetInstance().cameraControll.GetCamera().orthographicSize;
+        southBound = transform.position.z - ((boundsCollider.size.z*transform.localScale.z) / 2) + GameplayManager.GetInstance().cameraControll.GetCamera().orthographicSize;
+        if (northBound < southBound)
+        {
+            northBound = transform.position.z;
+            southBound = transform.position.z;
+        }
+        eastBound = transform.position.x + ((boundsCollider.size.x * transform.localScale.x) / 2) - GameplayManager.GetInstance().cameraControll.GetCamera().orthographicSize;
+        westBound = transform.position.x - ((boundsCollider.size.x * transform.localScale.x) / 2) + GameplayManager.GetInstance().cameraControll.GetCamera().orthographicSize;
+        if (eastBound < westBound)
+        {
+            eastBound = transform.position.x;
+            westBound = transform.position.x;
+        }
     }
 
     public float GetNorthBound()
