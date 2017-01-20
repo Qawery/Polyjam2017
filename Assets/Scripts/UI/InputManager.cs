@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public enum ActiveOrder
+public enum UnitOrders
 {
     None, Move, Attack, Patrol
 }
@@ -9,16 +9,18 @@ public enum ActiveOrder
 public class InputManager : MonoBehaviour
 {
     private float overlapRadius = 0.1f;
-    private ActiveOrder order;
-    private List<AgentDefault> selectedAgents;
+    private List<AgentAI> selectedUnits;
+    private UnitOrders unitOrder;
 
     public void Awake()
     {
-        selectedAgents = new List<AgentDefault>();
+        selectedUnits = new List<AgentAI>();
+        unitOrder = UnitOrders.None;
     }
 
     public void Update()
     {
+        DetermineUnitOrder();
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (Input.GetMouseButtonDown(0))
@@ -43,16 +45,55 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void DetermineUnitOrder()
+    {
+        if (selectedUnits.Count > 0)
+        {
+            if (Input.GetKeyDown("Z"))
+            {
+                //move
+            }
+            else if (Input.GetKeyDown("X"))
+            {
+                //attack
+            }
+            else if (Input.GetKeyDown("C"))
+            {
+                //stop
+            }
+            else if (Input.GetKeyDown("V"))
+            {
+                //patrol
+            }
+        }
+        else
+        {
+            unitOrder = UnitOrders.None;
+        }
+    }
+
     private void LeftMouseButtonOnly()
     {
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("NOPE LMB hit");
-        }
-        else
-        {
-            print("NOPE LMB miss");
+            print("LMB hit");
+            if(selectedUnits.Count > 0)
+            {
+                if(unitOrder == UnitOrders.None)
+                {
+                    DeselectAll();
+                    TryToSelect(rayResult);
+                }
+                 else
+                {
+                    ExecuteOrder(rayResult);
+                }
+            }
+            else
+            {
+                TryToSelect(rayResult);
+            }
         }
     }
 
@@ -61,11 +102,13 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("NOPE LMB_S hit");
+            print("LMB_S hit");
+            /**/
         }
         else
         {
-            print("NOPE LMB_S miss");
+            print("LMB_S miss");
+            /**/
         }
     }
 
@@ -74,11 +117,13 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("NOPE RMB hit");
+            print("RMB hit");
+            /**/
         }
         else
         {
-            print("NOPE RMB miss");
+            print("RMB miss");
+            /**/
         }
     }
 
@@ -87,11 +132,13 @@ public class InputManager : MonoBehaviour
         KeyValuePair<bool, RaycastHit> rayResult = ShootRayFromCamera();
         if (rayResult.Key)
         {
-            print("NOPE RMB_S hit");
+            print("RMB_S hit");
+            /**/
         }
         else
         {
-            print("NOPE RMB_S miss");
+            print("RMB_S miss");
+            /**/
         }
     }
 
@@ -101,5 +148,67 @@ public class InputManager : MonoBehaviour
         RaycastHit hit;
         Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
         return new KeyValuePair<bool, RaycastHit>(Physics.Raycast(ray, out hit), hit);
+    }
+
+    private void ActivateHighlightOfSelected()
+    {
+        foreach (AgentDefault agent in selectedUnits)
+        {
+            agent.ActivateHighlight();
+        }
+    }
+
+    private void DeselectAll()
+    {
+        DeactivateHighlightOfSelected();
+        selectedUnits.Clear();
+    }
+
+    private void DeactivateHighlightOfSelected()
+    {
+        foreach (AgentDefault agent in selectedUnits)
+        {
+            agent.DeactivateHighlight();
+        }
+    }
+
+    private bool TryToSelect(KeyValuePair<bool, RaycastHit> rayResult)
+    {
+        if (rayResult.Value.collider.GetComponent<AgentAI>() != null && rayResult.Value.collider.GetComponent<AgentAI>().team == Teams.Player)
+        {
+            selectedUnits.Add(rayResult.Value.collider.GetComponent<AgentAI>());
+            rayResult.Value.collider.GetComponent<AgentAI>().ActivateHighlight();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool ExecuteOrder(KeyValuePair<bool, RaycastHit> rayResult)
+    {
+        //TODO wykonanie bieżącego rozkazu w kontekscie reyResult
+        switch (unitOrder)
+        {
+            case UnitOrders.Move:
+                MoveAllUnits(rayResult.Value.point);
+                break;
+
+            case UnitOrders.Attack:
+                break;
+
+            case UnitOrders.Patrol:
+                break;
+        }
+        return false;
+    }
+
+    private void MoveAllUnits(Vector3 newDestination)
+    {
+        foreach(AgentAI agent in selectedUnits)
+        {
+            agent.GoToDestination(newDestination);
+        }
     }
 }

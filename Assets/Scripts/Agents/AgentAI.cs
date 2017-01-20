@@ -16,8 +16,9 @@ public class AgentAI : AgentDefault
     private Vector3 destination;
     private AgentDefault target;
 
-    public void Awake()
+    public override void Awake()
     {
+        base.Awake();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Assert.IsNotNull(navMeshAgent, "Missing navMeshAgent");
         turret = GetComponent<TurretAI>();
