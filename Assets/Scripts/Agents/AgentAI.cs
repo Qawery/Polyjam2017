@@ -9,11 +9,13 @@ public enum AgentInternalState
 
 public class AgentAI : AgentDefault
 {
-    public float distanceToleration = 0.5f;
+    private float distanceToleration = 3f;
     private NavMeshAgent navMeshAgent;
     private TurretAI turret;
     private AgentInternalState state;
     private Vector3 destination;
+    private Vector3 patrolDestination;
+    private bool toPatrolDestination = false;
 
     public override void Awake()
     {
@@ -49,10 +51,6 @@ public class AgentAI : AgentDefault
 
                 case AgentInternalState.Patrol:
                     ActionPatrol();
-                    break;
-
-                default:
-                    Assert.IsFalse(true, "Not supported agent state.");
                     break;
             }
         }
@@ -93,12 +91,41 @@ public class AgentAI : AgentDefault
 
     private void ActionAttackMove()
     {
-        //TODO akcja
+        if(turret.GetTemporaryTarget() != null)
+        {
+            navMeshAgent.SetDestination(transform.position);
+        }
+        else
+        {
+            navMeshAgent.SetDestination(destination);
+        }
     }
 
     private void ActionPatrol()
     {
-        //TODO akcja
+        if (turret.GetTemporaryTarget() != null)
+        {
+            navMeshAgent.SetDestination(transform.position);
+        }
+        else
+        {
+            if (toPatrolDestination)
+            {
+                navMeshAgent.SetDestination(patrolDestination);
+                if (Vector3.Distance(transform.position, patrolDestination) <= distanceToleration)
+                {
+                    toPatrolDestination = false;
+                }
+            }
+            else
+            {
+                navMeshAgent.SetDestination(destination);
+                if (Vector3.Distance(transform.position, destination) <= distanceToleration)
+                {
+                    toPatrolDestination = true;
+                }
+            }
+        }
     }
 
     public void Idle()
@@ -149,9 +176,11 @@ public class AgentAI : AgentDefault
     {
         if (health.IsAlive())
         {
-            destination = newDestination;
+            destination = transform.position;
+            patrolDestination = newDestination;
             turret.SetPriorityTarget(null);
-            navMeshAgent.SetDestination(destination);
+            navMeshAgent.SetDestination(patrolDestination);
+            toPatrolDestination = true;
             state = AgentInternalState.Patrol;
         }
     }

@@ -176,7 +176,6 @@ public class InputManager : MonoBehaviour
     
     private bool ExecuteOrder(KeyValuePair<bool, RaycastHit> rayResult)
     {
-        //TODO wykonanie bieżącego rozkazu w kontekscie reyResult
         switch (unitOrder)
         {
             case UnitOrders.Move:
@@ -185,11 +184,11 @@ public class InputManager : MonoBehaviour
                 break;
 
             case UnitOrders.Attack:
-                //TODO atak
+                AttackAllUnits(rayResult.Value);
                 break;
 
             case UnitOrders.Patrol:
-                //TODO patrol
+                PatrolAllUnits(rayResult.Value.point);
                 break;
         }
         return false;
@@ -200,6 +199,32 @@ public class InputManager : MonoBehaviour
         foreach(AgentAI agent in selectedUnits)
         {
             agent.GoToDestination(newDestination);
+        }
+    }
+
+    private void AttackAllUnits(RaycastHit result)
+    {
+        if (result.collider.GetComponent<AgentDefault>() != null && result.collider.GetComponent<AgentDefault>().team != Teams.Player)
+        {
+            foreach (AgentAI agent in selectedUnits)
+            {
+                agent.AttackTarget(result.collider.GetComponent<AgentDefault>());
+            }
+        }
+        else
+        {
+            foreach (AgentAI agent in selectedUnits)
+            {
+                agent.AttackMove(result.point);
+            }
+        }
+    }
+
+    private void PatrolAllUnits(Vector3 newDestination)
+    {
+        foreach (AgentAI agent in selectedUnits)
+        {
+            agent.Patrol(newDestination);
         }
     }
 
