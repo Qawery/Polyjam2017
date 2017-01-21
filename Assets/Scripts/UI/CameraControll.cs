@@ -3,7 +3,9 @@ using UnityEngine.Assertions;
 
 public class CameraControll : MonoBehaviour
 {
+    public float zoomSpeed = 5f;
     public float movementSpeed = 1.5f;
+    public float changeBoost = 3f;
     public float minOrtographicSize = 4f;
     public float maxOrtographicSize = 20f;
 
@@ -18,7 +20,10 @@ public class CameraControll : MonoBehaviour
     public void LateUpdate()
     {
         Vector2 movementVector = new Vector2(Input.GetAxis("Horizontal") * Time.deltaTime * movementSpeed, Input.GetAxis("Vertical") * Time.deltaTime * movementSpeed);
-
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            movementVector *= changeBoost;
+        }
         Vector3 newPosition = new Vector3(transform.position.x + movementVector.x, transform.position.y, transform.position.z + movementVector.y);
         if (newPosition.x > GameplayManager.GetInstance().cameraBounds.GetEastBound())
         {
@@ -37,6 +42,29 @@ public class CameraControll : MonoBehaviour
             newPosition.z = GameplayManager.GetInstance().cameraBounds.GetSouthBound();
         }
         transform.position = newPosition;
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                ChangeOrtographicSize(-zoomSpeed * Time.deltaTime * changeBoost);
+            }
+            else
+            {
+                ChangeOrtographicSize(-zoomSpeed * Time.deltaTime);
+            }
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            { 
+                ChangeOrtographicSize(zoomSpeed * Time.deltaTime * changeBoost);
+            }
+            else
+            {
+                ChangeOrtographicSize(zoomSpeed * Time.deltaTime);
+            }
+        }
     }
 
     public Camera GetCamera()

@@ -8,8 +8,6 @@ public enum UnitOrders
 
 public class InputManager : MonoBehaviour
 {
-    public float zoomSpeed = 5f;
-    public float cameraMovementBoost = 3f;
     public List<AgentAI> selectedUnits;
     public UnitOrders unitOrder;
 
@@ -24,7 +22,6 @@ public class InputManager : MonoBehaviour
         DetermineUnitOrder();
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            ButtonCommandsShift();
             if (Input.GetMouseButtonDown(0))
             {
                 LeftMouseButtonShift();
@@ -36,7 +33,6 @@ public class InputManager : MonoBehaviour
         }
         else
         {
-            ButtonCommands();
             if (Input.GetMouseButtonDown(0))
             {
                 LeftMouseButtonOnly();
@@ -47,31 +43,6 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-
-    public void ButtonCommandsShift()
-    {
-        if (Input.GetKey(KeyCode.Q))
-        {
-            GameplayManager.GetInstance().cameraControll.ChangeOrtographicSize(-zoomSpeed * Time.deltaTime * cameraMovementBoost);
-        }
-        else if (Input.GetKey(KeyCode.E))
-        {
-            GameplayManager.GetInstance().cameraControll.ChangeOrtographicSize(zoomSpeed * Time.deltaTime * cameraMovementBoost);
-        }
-    }
-
-    public void ButtonCommands()
-    {
-        if(Input.GetKey(KeyCode.Q))
-        {
-            GameplayManager.GetInstance().cameraControll.ChangeOrtographicSize(-zoomSpeed * Time.deltaTime);
-        }
-        else if(Input.GetKey(KeyCode.E))
-        {
-            GameplayManager.GetInstance().cameraControll.ChangeOrtographicSize(zoomSpeed * Time.deltaTime);
-        }
-    }
-
     public void DetermineUnitOrder()
     {
         if (selectedUnits.Count > 0)
