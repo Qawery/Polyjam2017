@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections.Generic;
 
 public enum UnitOrders
 {
-    None, Move, Attack, Patrol
+    None, Move, Attack, Patrol, DragSelection
 }
 
 public class InputManager : MonoBehaviour
 {
     public List<AgentAI> selectedUnits;
     public UnitOrders unitOrder;
+    private Vector3 LMB_DownPosition;
+    private Vector3 LMB_UpPosition;
+    private Vector3 currentCursorPosition;
 
     public void Awake()
     {
@@ -20,27 +24,52 @@ public class InputManager : MonoBehaviour
     public void Update()
     {
         CleanUpCorpses();
-        DetermineUnitOrder();
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKeyUp(KeyCode.LeftAlt))
         {
-            if (Input.GetMouseButtonDown(0))
+            //przerwij drag selection
+        }
+        else if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            if (Input.GetMouseButtonUp(0))
             {
-                LeftMouseButtonShift();
+                //zrealizuj drag selection
+                LMB_UpPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
             }
-            else if (Input.GetMouseButtonDown(1))
+            else if (Input.GetMouseButtonDown(0))
             {
-                RightMouseButtonShift();
+                //rozpocznij drag slection
+                LMB_DownPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                currentCursorPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
+                //TODO: narysowanie prostokąta
             }
         }
         else
         {
-            if (Input.GetMouseButtonDown(0))
+            DetermineUnitOrder();
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                LeftMouseButtonOnly();
+                if (Input.GetMouseButtonUp(0))
+                {
+                    LeftMouseButtonShift();
+                }
+                else if (Input.GetMouseButtonUp(1))
+                {
+                    RightMouseButtonShift();
+                }
             }
-            else if (Input.GetMouseButtonDown(1))
+            else
             {
-                RightMouseButtonOnly();
+                if (Input.GetMouseButtonUp(0))
+                {
+                    LeftMouseButtonOnly();
+                }
+                else if (Input.GetMouseButtonUp(1))
+                {
+                    RightMouseButtonOnly();
+                }
             }
         }
     }
@@ -98,7 +127,6 @@ public class InputManager : MonoBehaviour
                 if(unitOrder == UnitOrders.None)
                 {
                     DeselectAll();
-                    //TODO selection
                     TryToSelect(rayResult);
                 }
                  else
@@ -181,7 +209,6 @@ public class InputManager : MonoBehaviour
 
     private bool TryToSelect(KeyValuePair<bool, RaycastHit> rayResult)
     {
-        //TODO sprawdzanie
         if (rayResult.Value.collider.GetComponent<AgentAI>() != null && rayResult.Value.collider.GetComponent<AgentAI>().IsAvailableToSelect())
         {
             selectedUnits.Add(rayResult.Value.collider.GetComponent<AgentAI>());
@@ -258,22 +285,31 @@ public class InputManager : MonoBehaviour
 
     public void SetToMoveOrder()
     {
+        CancelDragSelection();
         unitOrder = UnitOrders.Move;
     }
 
     public void SetToAttackOrder()
     {
+        CancelDragSelection();
         unitOrder = UnitOrders.Attack;
     }
 
     public void SetToStopOrder()
     {
+        CancelDragSelection();
         StopUnits();
         unitOrder = UnitOrders.None;
     }
 
     public void SetToPatrolOrder()
     {
+        CancelDragSelection();
         unitOrder = UnitOrders.Patrol;
+    }
+
+    private void CancelDragSelection()
+    {
+        //Cancels drag selection
     }
 }
