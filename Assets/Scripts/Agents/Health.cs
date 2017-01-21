@@ -5,7 +5,7 @@ public class Health : MonoBehaviour
     public float MaxHealth;
     public float currentHealth;
     public float regenerationRate;
-    private bool isAlive;
+    private bool isAlive = true;
 
     public void Update()
     {

@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 public class TurretAI : MonoBehaviour
 {
+    private AgentDefault owner;
     private WeaponAI weapon;
-
-    public AgentDefault priorityTarget;
+    private AgentDefault priorityTarget;
     private AgentDefault temporaryTarget;
 
     public void Awake()
     {
-        //TODO: znalezienie broni
+        weapon = GetComponent<WeaponAI>();
+        Assert.IsNotNull(weapon, "Missing weapon");
+        owner = GetComponentInParent<AgentDefault>();
+        Assert.IsNotNull(owner, "Missing owner");
     }
 
     public void ManualUpdate()
@@ -32,21 +36,26 @@ public class TurretAI : MonoBehaviour
         }
     }
 
-    private bool IsInRange(AgentDefault target)
+    public bool IsInRange(AgentDefault target)
     {
-        //TODO: sprawwdzenie odleglosci i zasięgu broni
+        if(Vector3.Distance(transform.position, target.transform.position) <= weapon.range)
+        {
+            return true;
+        }
         return false;
     }
 
     private void AimAt(AgentDefault target)
     {
-        //TODO celowanie wieżyczką do celu
+        Vector3 aimDirection = target.transform.position - transform.position;
+        Vector3 newRotation = Vector3.RotateTowards(transform.forward, aimDirection, 2*Mathf.PI, 0f);
+        transform.localRotation = Quaternion.LookRotation(newRotation);
     }
 
     private void EngageTarget(AgentDefault target)
     {
         AimAt(target);
-        if(weapon.IsAimedAt(target) && weapon.IsReadyToFire())
+        if(weapon.IsAimedAt(target))
         {
             weapon.Fire(target);
         }
@@ -54,7 +63,33 @@ public class TurretAI : MonoBehaviour
 
     private AgentDefault FindTarget()
     {
-        //TODO: zwrócenie pierwszego poprawnego celu
+        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, weapon.range);
+        foreach(Collider collider in collidersInRange)
+        {
+            AgentDefault agent = collider.GetComponent<AgentDefault>();
+            if(agent != null && agent != owner && agent.team != owner.team && agent.GetHealth().IsAlive())
+            {
+                return agent;
+            }
+        }
         return null;
+    }
+
+    public void SetPriorityTarget(AgentDefault newPriorityTarget)
+    {
+        if(newPriorityTarget != owner)
+        {
+            priorityTarget = newPriorityTarget;
+        }
+    }
+
+    public AgentDefault GetPriorityTarget()
+    {
+        return priorityTarget;
+    }
+
+    public AgentDefault GetTemporaryTarget()
+    {
+        return temporaryTarget;
     }
 }

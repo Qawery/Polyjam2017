@@ -3,6 +3,7 @@
 public class WeaponAI : MonoBehaviour
 {
     public float range = 2f;
+    public float damage = 1f;
     public float reloadTime = 1f;
     private float reloadCooldown = 0f;
 
@@ -37,5 +38,11 @@ public class WeaponAI : MonoBehaviour
         //TODO efekt wystrzału
         //TODO dzwiek wystrzalu
         //TODO zadanie obrazen
+        if(IsReadyToFire())
+        {
+            reloadCooldown = reloadTime;
+            target.GetHealth().ApplyChange(-damage);
+            print("fire");
+        }
     }
 }

@@ -87,6 +87,7 @@ public class InputManager : MonoBehaviour
                  else
                 {
                     ExecuteOrder(rayResult);
+                    DeselectAll();
                 }
             }
             else

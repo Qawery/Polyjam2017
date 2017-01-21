@@ -12,7 +12,6 @@ public class CameraBounds : MonoBehaviour
     public void Start()
     {
         Assert.IsNotNull(boundsCollider, "Missing boundsCollider");
-        print("");
         northBound = transform.position.z + ((boundsCollider.size.z*transform.localScale.z) / 2) - GameplayManager.GetInstance().cameraControll.GetCamera().orthographicSize;
         southBound = transform.position.z - ((boundsCollider.size.z*transform.localScale.z) / 2) + GameplayManager.GetInstance().cameraControll.GetCamera().orthographicSize;
         if (northBound < southBound)

@@ -9,6 +9,7 @@ public enum AgentInternalState
 
 public class AgentAI : AgentDefault
 {
+    public float distanceToleration = 0.5f;
     private NavMeshAgent navMeshAgent;
     private TurretAI turret;
     private AgentInternalState state;
@@ -31,7 +32,6 @@ public class AgentAI : AgentDefault
             switch (state)
             {
                 case AgentInternalState.Idle:
-                    ActionIdle();
                     break;
 
                 case AgentInternalState.GoToDestination:
@@ -59,22 +59,36 @@ public class AgentAI : AgentDefault
         else
         {
             //TODO śmierć postaci
+            Destroy(gameObject);
         }
-    }
-
-    private void ActionIdle()
-    {
-        //TODO akcja
     }
 
     private void ActionGoToDestination()
     {
-        //TODO akcja
+        if(Vector3.Distance(transform.position, destination) < distanceToleration)
+        {
+            Idle();
+        }
     }
 
     private void ActionAttackTarget()
     {
-        //TODO akcja
+        if(turret.GetPriorityTarget() == null || turret.GetPriorityTarget().GetHealth() == null || !turret.GetPriorityTarget().GetHealth().IsAlive())
+        {
+            Idle();
+        }
+        else
+        {
+            if (turret.IsInRange(turret.GetPriorityTarget()))
+            {
+                destination = transform.position;
+            }
+            else
+            {
+                destination = turret.GetPriorityTarget().transform.position;
+            }
+            navMeshAgent.SetDestination(destination);
+        }
     }
 
     private void ActionAttackMove()
@@ -92,7 +106,7 @@ public class AgentAI : AgentDefault
         if (health.IsAlive())
         {
             destination = transform.position;
-            turret.priorityTarget = null;
+            turret.SetPriorityTarget(null);
             navMeshAgent.SetDestination(destination);
             state = AgentInternalState.Idle;
         }
@@ -103,7 +117,7 @@ public class AgentAI : AgentDefault
         if (health.IsAlive())
         {
             destination = newDestination;
-            turret.priorityTarget = null;
+            turret.SetPriorityTarget(null);
             navMeshAgent.SetDestination(destination);
             state = AgentInternalState.GoToDestination;
         }
@@ -113,7 +127,9 @@ public class AgentAI : AgentDefault
     {
         if (health.IsAlive())
         {
-            turret.priorityTarget = newTarget;
+            turret.SetPriorityTarget(newTarget);
+            destination = newTarget.transform.position;
+            navMeshAgent.SetDestination(destination);
             state = AgentInternalState.AttackTarget;
         }
     }
@@ -123,7 +139,8 @@ public class AgentAI : AgentDefault
         if (health.IsAlive())
         {
             destination = newDestination;
-            turret.priorityTarget = null;
+            turret.SetPriorityTarget(null);
+            navMeshAgent.SetDestination(destination);
             state = AgentInternalState.AttackMove;
         }
     }
@@ -133,7 +150,8 @@ public class AgentAI : AgentDefault
         if (health.IsAlive())
         {
             destination = newDestination;
-            turret.priorityTarget = null;
+            turret.SetPriorityTarget(null);
+            navMeshAgent.SetDestination(destination);
             state = AgentInternalState.Patrol;
         }
     }
