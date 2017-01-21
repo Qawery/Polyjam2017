@@ -155,4 +155,14 @@ public class AgentAI : AgentDefault
             state = AgentInternalState.Patrol;
         }
     }
+
+    public override bool IsAvailableToSelect()
+    {
+        if(health.IsAlive() && team == Teams.Player)
+        {
+            //TODO sprawdzanie zasięgu radiowego
+            return true;
+        }
+        return false;
+    }
 }

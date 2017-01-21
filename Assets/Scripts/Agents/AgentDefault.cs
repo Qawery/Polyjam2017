@@ -34,4 +34,9 @@ public class AgentDefault : MonoBehaviour
     {
         return health;
     }
+
+    public virtual bool IsAvailableToSelect()
+    {
+        return false;
+    }
 }

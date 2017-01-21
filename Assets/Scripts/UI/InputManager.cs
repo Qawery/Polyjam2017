@@ -49,20 +49,19 @@ public class InputManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                unitOrder = UnitOrders.Move;
+                SetToMoveOrder();
             }
             else if (Input.GetKeyDown(KeyCode.X))
             {
-                unitOrder = UnitOrders.Attack;
+                SetToAttackOrder();
             }
             else if (Input.GetKeyDown(KeyCode.C))
             {
-                StopUnits();
-                unitOrder = UnitOrders.None;
+                SetToStopOrder();
             }
             else if (Input.GetKeyDown(KeyCode.V))
             {
-                unitOrder = UnitOrders.Patrol;
+                SetToPatrolOrder();
             }
         }
         else
@@ -86,7 +85,7 @@ public class InputManager : MonoBehaviour
                  else
                 {
                     ExecuteOrder(rayResult);
-                    DeselectAll();
+                    unitOrder = UnitOrders.None;
                 }
             }
             else
@@ -162,7 +161,8 @@ public class InputManager : MonoBehaviour
 
     private bool TryToSelect(KeyValuePair<bool, RaycastHit> rayResult)
     {
-        if (rayResult.Value.collider.GetComponent<AgentAI>() != null && rayResult.Value.collider.GetComponent<AgentAI>().team == Teams.Player)
+        //TODO sprawdzanie
+        if (rayResult.Value.collider.GetComponent<AgentAI>() != null && rayResult.Value.collider.GetComponent<AgentAI>().IsAvailableToSelect())
         {
             selectedUnits.Add(rayResult.Value.collider.GetComponent<AgentAI>());
             rayResult.Value.collider.GetComponent<AgentAI>().ActivateHighlight();
@@ -180,13 +180,16 @@ public class InputManager : MonoBehaviour
         switch (unitOrder)
         {
             case UnitOrders.Move:
+                //TODO rozproszenie rozdzialu
                 MoveAllUnits(rayResult.Value.point);
                 break;
 
             case UnitOrders.Attack:
+                //TODO atak
                 break;
 
             case UnitOrders.Patrol:
+                //TODO patrol
                 break;
         }
         return false;
@@ -206,5 +209,26 @@ public class InputManager : MonoBehaviour
         {
             agent.Idle();
         }
+    }
+
+    public void SetToMoveOrder()
+    {
+        unitOrder = UnitOrders.Move;
+    }
+
+    public void SetToAttackOrder()
+    {
+        unitOrder = UnitOrders.Attack;
+    }
+
+    public void SetToStopOrder()
+    {
+        StopUnits();
+        unitOrder = UnitOrders.None;
+    }
+
+    public void SetToPatrolOrder()
+    {
+        unitOrder = UnitOrders.Patrol;
     }
 }

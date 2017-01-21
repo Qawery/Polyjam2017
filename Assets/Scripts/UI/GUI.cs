@@ -9,6 +9,8 @@ public class GUI : MonoBehaviour
     public Button attackButton;
     public Button stopButton;
     public Button patrolButton;
+    public float selectedOffset = 20f;
+    private float originalY;
     private List<Button> allButtons;
 
     public void Awake()
@@ -22,6 +24,8 @@ public class GUI : MonoBehaviour
         allButtons.Add(stopButton);
         Assert.IsNotNull(patrolButton, "Missing patrolButton");
         allButtons.Add(patrolButton);
+        originalY = patrolButton.transform.position.y;
+        HideAll();
     }
 
     public void Update()
@@ -59,6 +63,7 @@ public class GUI : MonoBehaviour
         foreach(Button button in allButtons)
         {
             button.enabled = false;
+            button.GetComponent<Image>().enabled = false;
         }
     }
 
@@ -67,6 +72,7 @@ public class GUI : MonoBehaviour
         foreach (Button button in allButtons)
         {
             button.enabled = true;
+            button.GetComponent<Image>().enabled = true;
         }
     }
 
@@ -80,9 +86,11 @@ public class GUI : MonoBehaviour
 
     private void SelectButton(Button button)
     {
+        button.transform.position = new Vector3(button.transform.position.x, button.transform.position.y + selectedOffset, button.transform.position.z);
     }
 
     private void UnselectButton(Button button)
     {
+        button.transform.position = new Vector3(button.transform.position.x, originalY, button.transform.position.z);
     }
 }
