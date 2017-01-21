@@ -8,51 +8,71 @@ public enum SquadState
 
 public class SquadAI : MonoBehaviour
 {
-    private float goalTolerance = 0.5f;
+    private float goalTolerance = 3f;
     private Teams team;
     private List<AgentAI> agentsInSquad;
     private SquadState currentState;
     private Vector3 currentDestination;
-
-    public SquadAI(AgentAI firstAgent, Vector3 deploymentDestination)
-    {
-        currentDestination = deploymentDestination;
-        team = firstAgent.team;
-        AddAgent(firstAgent);
-    }
+    public bool isReady;
 
     public void Awake()
     {
         agentsInSquad = new List<AgentAI>();
+        isReady = false;
+    }
+
+    public void Start()
+    {
+        GameplayManager.GetInstance().scenario.AddSquad(this);
     }
 
     public void Update()
     {
-        if (agentsInSquad.Count <= 0)
+        if (isReady)
         {
-            Destroy(gameObject);
-        }
-        else
-        {
-            if(IsUnitInCombat())
+            CleanUpCorpses();
+            if (agentsInSquad.Count <= 0)
             {
-                AcquireTargets();
+                Destroy(gameObject);
             }
             else
             {
-                if(IsDestinationReached())
+                if (IsUnitInCombat())
                 {
-                    Concentrate();
+                    AcquireTargets();
                 }
                 else
                 {
-                    MoveToDestination();
+                    if (IsDestinationReached())
+                    {
+                        Concentrate();
+                    }
+                    else
+                    {
+                        MoveToDestination();
+                    }
                 }
             }
         }
     }
 
-    private bool IsDestinationReached()
+    private void CleanUpCorpses()
+    {
+        int i = 0;
+        while (i < agentsInSquad.Count)
+        {
+            if (agentsInSquad[i] == null)
+            {
+                agentsInSquad.RemoveAt(i);
+            }
+            else
+            {
+                i++;
+            }
+        }
+    }
+
+    public bool IsDestinationReached()
     {
         foreach (AgentAI agent in agentsInSquad)
         {
@@ -64,7 +84,7 @@ public class SquadAI : MonoBehaviour
         return false;
     }
 
-    private bool IsUnitInCombat()
+    public bool IsUnitInCombat()
     {
         foreach (AgentAI agent in agentsInSquad)
         {
@@ -102,7 +122,7 @@ public class SquadAI : MonoBehaviour
 
     public void AddAgent(AgentAI newAgent)
     {
-        if (newAgent.team == team && newAgent.GetHealth().IsAlive())
+        if (newAgent != null && newAgent.team == team && newAgent.GetHealth().IsAlive())
         {
             agentsInSquad.Add(newAgent);
         }
@@ -118,10 +138,9 @@ public class SquadAI : MonoBehaviour
 
     public void Concentrate()
     {
-        currentDestination = agentsInSquad[0].transform.position;
         foreach (AgentAI agent in agentsInSquad)
         {
-            agent.AttackMove(currentDestination);
+            agent.AttackMove(agentsInSquad[0].transform.position);
         }
     }
 
@@ -133,5 +152,10 @@ public class SquadAI : MonoBehaviour
     public int GetSquadSize()
     {
         return agentsInSquad.Count;
+    }
+
+    public void SetTeam(Teams newTeam)
+    {
+        team = newTeam;
     }
 }

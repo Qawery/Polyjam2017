@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
 
     public void Update()
     {
+        CleanUpCorpses();
         DetermineUnitOrder();
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -43,6 +44,23 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+
+    private void CleanUpCorpses()
+    {
+        int i = 0;
+        while (i < selectedUnits.Count)
+        {
+            if (selectedUnits[i] == null)
+            {
+                selectedUnits.RemoveAt(i);
+            }
+            else
+            {
+                i++;
+            }
+        }
+    }
+
     public void DetermineUnitOrder()
     {
         if (selectedUnits.Count > 0)
@@ -80,6 +98,7 @@ public class InputManager : MonoBehaviour
                 if(unitOrder == UnitOrders.None)
                 {
                     DeselectAll();
+                    //TODO selection
                     TryToSelect(rayResult);
                 }
                  else
@@ -102,6 +121,7 @@ public class InputManager : MonoBehaviour
         {
             if (unitOrder == UnitOrders.None)
             {
+                //TODO selection
                 TryToSelect(rayResult);
             }
             else

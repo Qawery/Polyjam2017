@@ -8,6 +8,7 @@ public class GameplayManager : MonoBehaviour
     public CameraBounds cameraBounds;
     public GUI gui;
     public InputManager inputManager;
+    public Scenario scenario;
 
     private GameplayManager()
     {
@@ -21,6 +22,8 @@ public class GameplayManager : MonoBehaviour
         Assert.IsNotNull(gui, "Missing GUI");
         inputManager = GetComponent<InputManager>();
         Assert.IsNotNull(inputManager, "Missing inputManager");
+        scenario = GetComponent<Scenario>();
+        Assert.IsNotNull(scenario, "Missing scenario");
     }
 
     public static GameplayManager GetInstance()
