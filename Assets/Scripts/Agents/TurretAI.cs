@@ -49,7 +49,8 @@ public class TurretAI : MonoBehaviour
     {
         Vector3 aimDirection = target.transform.position - transform.position;
         Vector3 newRotation = Vector3.RotateTowards(transform.forward, aimDirection, 2*Mathf.PI, 0f);
-        transform.localRotation = Quaternion.LookRotation(newRotation);
+        newRotation.y = 0f;
+        transform.rotation = Quaternion.LookRotation(newRotation);
     }
 
     private void EngageTarget(AgentDefault target)

@@ -42,7 +42,6 @@ public class WeaponAI : MonoBehaviour
         {
             reloadCooldown = reloadTime;
             target.GetHealth().ApplyChange(-damage);
-            print("fire");
         }
     }
 }

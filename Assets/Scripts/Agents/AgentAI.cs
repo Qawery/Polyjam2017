@@ -29,6 +29,7 @@ public class AgentAI : AgentDefault
     {
         if (health.IsAlive())
         {
+            turret.ManualUpdate();
             switch (state)
             {
                 case AgentInternalState.Idle:
@@ -54,7 +55,6 @@ public class AgentAI : AgentDefault
                     Assert.IsFalse(true, "Not supported agent state.");
                     break;
             }
-            turret.ManualUpdate();
         }
         else
         {

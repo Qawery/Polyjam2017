@@ -3,8 +3,11 @@ using UnityEngine.Assertions;
 
 public class CameraControll : MonoBehaviour
 {
+    public float movementSpeed = 1.5f;
+    public float minOrtographicSize = 4f;
+    public float maxOrtographicSize = 20f;
+
     private Camera cameraComponent;
-    public float movementSpeed = 0.5f;
 
     public void Awake()
     {
@@ -39,5 +42,18 @@ public class CameraControll : MonoBehaviour
     public Camera GetCamera()
     {
         return cameraComponent;
+    }
+
+    public void ChangeOrtographicSize(float ammount)
+    {
+        cameraComponent.orthographicSize += ammount;
+        if(cameraComponent.orthographicSize > maxOrtographicSize)
+        {
+            cameraComponent.orthographicSize = maxOrtographicSize;
+        }
+        if(cameraComponent.orthographicSize < minOrtographicSize)
+        {
+            cameraComponent.orthographicSize = minOrtographicSize;
+        }
     }
 }
