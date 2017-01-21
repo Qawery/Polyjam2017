@@ -10,7 +10,7 @@ public enum AgentInternalState
 public class AgentAI : AgentDefault
 {
     private NavMeshAgent navMeshAgent;
-
+    private TurretAI turret;
     private AgentInternalState state;
     private Vector3 destination;
 
@@ -19,95 +19,122 @@ public class AgentAI : AgentDefault
         base.Awake();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Assert.IsNotNull(navMeshAgent, "Missing navMeshAgent");
-        //turret = GetComponent<TurretAI>();
-        //Assert.IsNotNull(turret, "Missing turret.");
+        turret = GetComponentInChildren<TurretAI>();
+        Assert.IsNotNull(turret, "Missing turret.");
         Idle();
     }
 
     public void Update()
     {
-        switch (state)
+        if (health.IsAlive())
         {
-            case AgentInternalState.Idle:
-                ActionIdle();
-                break;
+            switch (state)
+            {
+                case AgentInternalState.Idle:
+                    ActionIdle();
+                    break;
 
-            case AgentInternalState.GoToDestination:
-                ActionGoToDestination();
-                break;
+                case AgentInternalState.GoToDestination:
+                    ActionGoToDestination();
+                    break;
 
-            case AgentInternalState.AttackTarget:
-                ActionAttackTarget();
-                break;
+                case AgentInternalState.AttackTarget:
+                    ActionAttackTarget();
+                    break;
 
-            case AgentInternalState.AttackMove:
-                ActionAttackMove();
-                break;
+                case AgentInternalState.AttackMove:
+                    ActionAttackMove();
+                    break;
 
-            case AgentInternalState.Patrol:
-                ActionPatrol();
-                break;
+                case AgentInternalState.Patrol:
+                    ActionPatrol();
+                    break;
 
-            default:
-                Assert.IsFalse(true, "Not supported agent state.");
-                break;
+                default:
+                    Assert.IsFalse(true, "Not supported agent state.");
+                    break;
+            }
+            turret.ManualUpdate();
+        }
+        else
+        {
+            //TODO śmierć postaci
         }
     }
 
     private void ActionIdle()
     {
-
+        //TODO akcja
     }
 
     private void ActionGoToDestination()
     {
-
+        //TODO akcja
     }
 
     private void ActionAttackTarget()
     {
-
+        //TODO akcja
     }
 
     private void ActionAttackMove()
     {
-
+        //TODO akcja
     }
 
     private void ActionPatrol()
     {
-
+        //TODO akcja
     }
 
     public void Idle()
     {
-        destination = transform.position;
-        navMeshAgent.SetDestination(destination);
-        state = AgentInternalState.Idle;
+        if (health.IsAlive())
+        {
+            destination = transform.position;
+            turret.priorityTarget = null;
+            navMeshAgent.SetDestination(destination);
+            state = AgentInternalState.Idle;
+        }
     }
 
     public void GoToDestination(Vector3 newDestination)
     {
-        destination = newDestination;
-        navMeshAgent.SetDestination(destination);
-        state = AgentInternalState.GoToDestination;
+        if (health.IsAlive())
+        {
+            destination = newDestination;
+            turret.priorityTarget = null;
+            navMeshAgent.SetDestination(destination);
+            state = AgentInternalState.GoToDestination;
+        }
     }
 
     public void AttackTarget(AgentDefault newTarget)
     {
-        //target = newTarget;
-        state = AgentInternalState.AttackTarget;
+        if (health.IsAlive())
+        {
+            turret.priorityTarget = newTarget;
+            state = AgentInternalState.AttackTarget;
+        }
     }
 
     public void AttackMove(Vector3 newDestination)
     {
-        destination = newDestination;
-        state = AgentInternalState.AttackMove;
+        if (health.IsAlive())
+        {
+            destination = newDestination;
+            turret.priorityTarget = null;
+            state = AgentInternalState.AttackMove;
+        }
     }
 
     public void Patrol(Vector3 newDestination)
     {
-        destination = newDestination;
-        state = AgentInternalState.Patrol;
+        if (health.IsAlive())
+        {
+            destination = newDestination;
+            turret.priorityTarget = null;
+            state = AgentInternalState.Patrol;
+        }
     }
 }

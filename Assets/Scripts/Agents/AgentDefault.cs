@@ -10,9 +10,12 @@ public class AgentDefault : MonoBehaviour
 {
     public Teams team;
     public GameObject highlight;
+    protected Health health;
 
     public virtual void Awake()
     {
+        health = GetComponent<Health>();
+        Assert.IsNotNull(health, "Missing health");
         Assert.IsNotNull(highlight, "Missing highlight");
         DeactivateHighlight();
     }
@@ -25,5 +28,10 @@ public class AgentDefault : MonoBehaviour
     public void DeactivateHighlight()
     {
         highlight.SetActive(false);
+    }
+
+    public Health GetHealth()
+    {
+        return health;
     }
 }

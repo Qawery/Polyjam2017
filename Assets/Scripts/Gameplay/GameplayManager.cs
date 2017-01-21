@@ -6,6 +6,8 @@ public class GameplayManager : MonoBehaviour
     private static GameplayManager instance;
     public CameraControll cameraControll;
     public CameraBounds cameraBounds;
+    public GUI gui;
+    public InputManager inputManager;
 
     private GameplayManager()
     {
@@ -16,6 +18,9 @@ public class GameplayManager : MonoBehaviour
         instance = this;
         Assert.IsNotNull(cameraControll, "Missing cameraControll.");
         Assert.IsNotNull(cameraBounds, "Missing cameraBounds");
+        Assert.IsNotNull(gui, "Missing GUI");
+        inputManager = GetComponent<InputManager>();
+        Assert.IsNotNull(inputManager, "Missing inputManager");
     }
 
     public static GameplayManager GetInstance()

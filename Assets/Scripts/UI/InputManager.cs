@@ -8,8 +8,8 @@ public enum UnitOrders
 
 public class InputManager : MonoBehaviour
 {
-    private List<AgentAI> selectedUnits;
-    private UnitOrders unitOrder;
+    public List<AgentAI> selectedUnits;
+    public UnitOrders unitOrder;
 
     public void Awake()
     {
@@ -59,6 +59,7 @@ public class InputManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.C))
             {
                 StopUnits();
+                unitOrder = UnitOrders.None;
             }
             else if (Input.GetKeyDown(KeyCode.V))
             {
