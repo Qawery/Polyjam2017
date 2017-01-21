@@ -165,4 +165,9 @@ public class AgentAI : AgentDefault
         }
         return false;
     }
+
+    public AgentDefault GetCurrentTarget()
+    {
+        return turret.GetTemporaryTarget();
+    }
 }
