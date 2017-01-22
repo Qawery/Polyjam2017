@@ -29,7 +29,7 @@ public class Scenario : MonoBehaviour
         CleanUpCorpses();
         foreach (SquadAI squad in squadList)
         {
-            if(squad.isReady)
+            if(squad != null && squad.isReady && squad.IsDestinationReached() && !squad.IsUnitInCombat())
             {
                 DetermineNextTowerToAttack(squad);
             }
@@ -74,9 +74,9 @@ public class Scenario : MonoBehaviour
     private void DetermineNextTowerToAttack(SquadAI squad)
     {
         List<TowerAI> towersLeft = new List<TowerAI>();
-        foreach(TowerAI tower in GameplayManager.GetInstance().towerList)
+        foreach (TowerAI tower in GameplayManager.GetInstance().towerList)
         {
-            if(tower.IsPowered())
+            if (tower.IsPowered())
             {
                 towersLeft.Add(tower);
             }
@@ -84,7 +84,7 @@ public class Scenario : MonoBehaviour
         if (towersLeft.Count > 0)
         {
             float random = Random.Range(0, towersLeft.Count - 0.1f);
-            int index = (int) Mathf.Floor(random);
+            int index = (int)Mathf.Floor(random);
             squad.SetDestination(towersLeft[index].transform.position);
         }
     }
