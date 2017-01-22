@@ -41,7 +41,7 @@ public class Scenario : MonoBehaviour
     {
         if (!ending)
         {
-            if (resourcesCounter <= 0 || !mainTower.GetComponent<TowerAI>().IsPowered())
+            if (resourcesCounter <= 0 || mainTower.GetComponent<TowerAI>().currentPowerLevel <= 0f)
             {
                 GameplayManager.GetInstance().isControllEnabled = false;
                 ending = true;
