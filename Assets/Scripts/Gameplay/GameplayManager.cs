@@ -13,6 +13,8 @@ public class GameplayManager : MonoBehaviour
     public List<AgentAI> allPlayerAgents;
     public List<TowerAI> towerList;
     public bool isControllEnabled;
+    public GameObject tankDeath;
+    public GameObject wormDeath;
 
     private GameplayManager()
     {
@@ -31,6 +33,8 @@ public class GameplayManager : MonoBehaviour
         Assert.IsNotNull(scenario, "Missing scenario");
         allPlayerAgents = new List<AgentAI>();
         towerList = new List<TowerAI>();
+        Assert.IsNotNull(tankDeath, "Missing tankDeath");
+        Assert.IsNotNull(wormDeath, "Missing wormDeath");
     }
 
     public static GameplayManager GetInstance()

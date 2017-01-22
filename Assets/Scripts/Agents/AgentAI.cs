@@ -97,10 +97,14 @@ public class AgentAI : AgentDefault
         }
         else
         {
-            //TODO śmierć postaci
             if(team == Teams.Player)
             {
                 GameplayManager.GetInstance().allPlayerAgents.Remove(this);
+                Instantiate(GameplayManager.GetInstance().tankDeath, transform.position, transform.rotation);
+            }
+            else if(team == Teams.Enemy)
+            {
+                Instantiate(GameplayManager.GetInstance().wormDeath, transform.position, GameplayManager.GetInstance().wormDeath.transform.localRotation);
             }
             Destroy(gameObject);
         }
