@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 public class GameplayManager : MonoBehaviour
@@ -9,7 +10,8 @@ public class GameplayManager : MonoBehaviour
     public GUI gui;
     public InputManager inputManager;
     public Scenario scenario;
-
+    public List<AgentAI> allPlayerAgents;
+    
     private GameplayManager()
     {
     }
@@ -24,6 +26,7 @@ public class GameplayManager : MonoBehaviour
         Assert.IsNotNull(inputManager, "Missing inputManager");
         scenario = GetComponent<Scenario>();
         Assert.IsNotNull(scenario, "Missing scenario");
+        allPlayerAgents = new List<AgentAI>();
     }
 
     public static GameplayManager GetInstance()

@@ -27,6 +27,14 @@ public class AgentAI : AgentDefault
         Idle();
     }
 
+    public void Start()
+    {
+        if (team == Teams.Player)
+        {
+            GameplayManager.GetInstance().allPlayerAgents.Add(this);
+        }
+    }
+
     public void Update()
     {
         if (health.IsAlive())
@@ -57,6 +65,10 @@ public class AgentAI : AgentDefault
         else
         {
             //TODO śmierć postaci
+            if(team == Teams.Player)
+            {
+                GameplayManager.GetInstance().allPlayerAgents.Remove(this);
+            }
             Destroy(gameObject);
         }
     }

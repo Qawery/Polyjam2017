@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Assertions;
 using System.Collections.Generic;
 
 public enum UnitOrders
@@ -24,26 +23,31 @@ public class InputManager : MonoBehaviour
     public void Update()
     {
         CleanUpCorpses();
-        if (Input.GetKeyUp(KeyCode.LeftAlt))
-        {
-            //przerwij drag selection
-        }
-        else if (Input.GetKey(KeyCode.LeftAlt))
+        if (Input.GetKey(KeyCode.LeftAlt))
         {
             if (Input.GetMouseButtonUp(0))
             {
-                //zrealizuj drag selection
                 LMB_UpPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
+                float minX = Mathf.Min(LMB_UpPosition.x, LMB_DownPosition.x);
+                float maxX = Mathf.Max(LMB_UpPosition.x, LMB_DownPosition.x);
+                float minZ = Mathf.Min(LMB_UpPosition.z, LMB_DownPosition.z);
+                float maxZ = Mathf.Max(LMB_UpPosition.z, LMB_DownPosition.z);
+                foreach (AgentAI agent in GameplayManager.GetInstance().allPlayerAgents)
+                {
+                    if(agent.transform.position.x < maxX && agent.transform.position.x > minX && agent.transform.position.z < maxZ && agent.transform.position.z > minZ)
+                    {
+                        TryToSelect(agent);
+                    }
+                }
             }
             else if (Input.GetMouseButtonDown(0))
             {
-                //rozpocznij drag slection
                 LMB_DownPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
             }
             else if (Input.GetMouseButton(0))
             {
-                currentCursorPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
                 //TODO: narysowanie prostokąta
+                //currentCursorPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
             }
         }
         else
@@ -204,6 +208,20 @@ public class InputManager : MonoBehaviour
         foreach (AgentDefault agent in selectedUnits)
         {
             agent.DeactivateHighlight();
+        }
+    }
+
+    private bool TryToSelect(AgentAI newAgent)
+    {
+        if (newAgent != null && newAgent.IsAvailableToSelect())
+        {
+            selectedUnits.Add(newAgent);
+            newAgent.ActivateHighlight();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
