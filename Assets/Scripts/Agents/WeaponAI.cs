@@ -34,7 +34,6 @@ public class WeaponAI : MonoBehaviour
 
     public bool IsAimedAt(AgentDefault target)
     {
-        //TODO czy bron jest wycelowana
         return true;
     }
 
@@ -46,6 +45,10 @@ public class WeaponAI : MonoBehaviour
         {
             reloadCooldown = reloadTime;
             target.GetHealth().ApplyChange(-damage);
+            if(GetComponent<AudioSource>() != null)
+            {
+                GetComponent<AudioSource>().Play();
+            }
         }
     }
 }
