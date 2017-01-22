@@ -9,6 +9,7 @@ public class Scenario : MonoBehaviour
     public GameObject mainTower;
     private List<SquadAI> squadList;
     private bool ending;
+    private float transitionCountdown = 5f;
 
     public void Awake()
     {
@@ -44,14 +45,22 @@ public class Scenario : MonoBehaviour
             {
                 GameplayManager.GetInstance().isControllEnabled = false;
                 ending = true;
-                //TODO: Przegrana
+                GameplayManager.GetInstance().gui.ShowEndingText(false);
             }
             else if (resourcesCounter >= maxResources)
             {
                 ending = true;
-                //TODO: Wygrana
+                GameplayManager.GetInstance().gui.ShowEndingText(true);
             }
             IncreaseResources(-5 * Time.deltaTime);
+        }
+        else
+        {
+            transitionCountdown -= Time.deltaTime;
+            if(transitionCountdown <= 0)
+            {
+                Application.LoadLevel("MainMenu");
+            }
         }
     }
 
