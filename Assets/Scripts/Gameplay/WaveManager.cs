@@ -56,23 +56,32 @@ public class WaveManager : MonoBehaviour
     {
         foreach(BatchInfo batch in waveToSpawn.batchesToSpawn)
         {
+            float random;
+            int index;
             switch (batch.batchDirection)
             {
-                //TODO: losowanie spawnerów
                 case BatchDirection.North:
-                    northAgentSpawners[0].CreateBatchToSpawn(batch);
+                    random = Random.Range(0, northAgentSpawners.Count - 0.1f);
+                    index = (int)Mathf.Floor(random);
+                    northAgentSpawners[index].CreateBatchToSpawn(batch);
                     break;
 
                 case BatchDirection.South:
-                    southAgentSpawners[0].CreateBatchToSpawn(batch);
+                    random = Random.Range(0, southAgentSpawners.Count - 0.1f);
+                    index = (int)Mathf.Floor(random);
+                    southAgentSpawners[index].CreateBatchToSpawn(batch);
                     break;
 
                 case BatchDirection.West:
-                    westAgentSpawners[0].CreateBatchToSpawn(batch);
+                    random = Random.Range(0, westAgentSpawners.Count - 0.1f);
+                    index = (int)Mathf.Floor(random);
+                    westAgentSpawners[index].CreateBatchToSpawn(batch);
                     break;
 
                 case BatchDirection.East:
-                    eastAgentSpawners[0].CreateBatchToSpawn(batch);
+                    random = Random.Range(0, eastAgentSpawners.Count - 0.1f);
+                    index = (int)Mathf.Floor(random);
+                    eastAgentSpawners[index].CreateBatchToSpawn(batch);
                     break;
             }
         }
@@ -80,20 +89,26 @@ public class WaveManager : MonoBehaviour
 
     private void CreateWaves()
     {
-        //TODO: programistyczne zapisuwanie fal do stworzenia
+        //TODO: programistyczne zapisywanie fal do stworzenia
+        BatchInfo newBatch;
 
+        //Ostatnia fala
         lastWave = new WaveInfo();
-        lastWave.waveTime = 10f;
-        BatchInfo newBatch = new BatchInfo(fastEnemy, 10, new Vector3(0, 0, -5));
+        lastWave.waveTime = 1f;
+
+        newBatch = new BatchInfo(standardEnemy, 1, new Vector3(0, 0, -5));
         newBatch.batchDirection = BatchDirection.North;
         lastWave.batchesToSpawn.Add(newBatch);
-        newBatch = new BatchInfo(fastEnemy, 10, new Vector3(0, 0, 5));
+
+        newBatch = new BatchInfo(standardEnemy, 1, new Vector3(0, 0, 5));
         newBatch.batchDirection = BatchDirection.South;
         lastWave.batchesToSpawn.Add(newBatch);
-        newBatch = new BatchInfo(fastEnemy, 10, new Vector3(-5, 0, 0));
+
+        newBatch = new BatchInfo(standardEnemy, 1, new Vector3(-5, 0, 0));
         newBatch.batchDirection = BatchDirection.East;
         lastWave.batchesToSpawn.Add(newBatch);
-        newBatch = new BatchInfo(fastEnemy, 10, new Vector3(5, 0, 0));
+
+        newBatch = new BatchInfo(standardEnemy, 1, new Vector3(5, 0, 0));
         newBatch.batchDirection = BatchDirection.West;
         lastWave.batchesToSpawn.Add(newBatch);
     }
