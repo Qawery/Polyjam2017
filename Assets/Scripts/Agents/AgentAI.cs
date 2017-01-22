@@ -104,7 +104,7 @@ public class AgentAI : AgentDefault
             }
             else if(team == Teams.Enemy)
             {
-                Instantiate(GameplayManager.GetInstance().wormDeath, transform.position, transform.rotation);
+                Instantiate(GameplayManager.GetInstance().wormDeath, transform.position, GameplayManager.GetInstance().wormDeath.transform.localRotation);
             }
             Destroy(gameObject);
         }
