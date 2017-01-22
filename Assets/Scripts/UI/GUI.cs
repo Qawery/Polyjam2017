@@ -5,6 +5,8 @@ using UnityEngine.Assertions;
 
 public class GUI : MonoBehaviour
 {
+    public Text victoryText;
+    public Text defeatText;
     public Button moveButton;
     public Button attackButton;
     public Button stopButton;
@@ -15,6 +17,10 @@ public class GUI : MonoBehaviour
 
     public void Awake()
     {
+        Assert.IsNotNull(victoryText, "Missing victoryText");
+        victoryText.enabled = false;
+        Assert.IsNotNull(defeatText, "Missing defeatText");
+        defeatText.enabled = false;
         allButtons = new List<Button>();
         Assert.IsNotNull(moveButton, "Missing moveButton");
         allButtons.Add(moveButton);
@@ -92,5 +98,17 @@ public class GUI : MonoBehaviour
     private void UnselectButton(Button button)
     {
         button.transform.position = new Vector3(button.transform.position.x, originalY, button.transform.position.z);
+    }
+
+    public void ShowEndingText(bool isVictory)
+    {
+        if(isVictory)
+        {
+            victoryText.enabled = true;
+        }
+        else
+        {
+            defeatText.enabled = true;
+        }
     }
 }
