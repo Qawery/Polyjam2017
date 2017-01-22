@@ -142,7 +142,7 @@ public class WaveManager : MonoBehaviour
 
         //Trzecia
         newWave = new WaveInfo();
-        newWave.waveTime = 5f;
+        newWave.waveTime = 14f;
 
         newBatch = new BatchInfo(fastEnemy, 4, new Vector3(-5, 0, 0));
         newBatch.batchDirection = BatchDirection.East;
@@ -156,7 +156,7 @@ public class WaveManager : MonoBehaviour
 
         //Czwarta
         lastWave = new WaveInfo();
-        lastWave.waveTime = 5f;
+        lastWave.waveTime = 10f;
 
         newBatch = new BatchInfo(standardEnemy, 1, new Vector3(0, 0, -5));
         newBatch.batchDirection = BatchDirection.North;
@@ -196,7 +196,7 @@ public class WaveManager : MonoBehaviour
 
         //Ostatnia fala
         lastWave = new WaveInfo();
-        lastWave.waveTime = 5f;
+        lastWave.waveTime = 10f;
 
         newBatch = new BatchInfo(standardEnemy, 1, new Vector3(0, 0, -5));
         newBatch.batchDirection = BatchDirection.North;

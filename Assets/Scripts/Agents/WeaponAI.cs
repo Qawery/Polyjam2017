@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 public class WeaponAI : MonoBehaviour
 {
@@ -6,6 +7,10 @@ public class WeaponAI : MonoBehaviour
     public float damage = 1f;
     public float reloadTime = 1f;
     private float reloadCooldown = 0f;
+
+    public void Start()
+    {
+    }
 
     public void Update()
     {
@@ -37,7 +42,6 @@ public class WeaponAI : MonoBehaviour
     {
         //TODO efekt wystrzału
         //TODO dzwiek wystrzalu
-        //TODO zadanie obrazen
         if(IsReadyToFire())
         {
             reloadCooldown = reloadTime;

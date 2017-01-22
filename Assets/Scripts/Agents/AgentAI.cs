@@ -25,13 +25,15 @@ public class AgentAI : AgentDefault
     public override void Awake()
     {
         base.Awake();
-        animator = GetComponentInChildren<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Assert.IsNotNull(navMeshAgent, "Missing navMeshAgent");
         turret = GetComponentInChildren<TurretAI>();
         Assert.IsNotNull(turret, "Missing turret.");
+        currentControll = maxControllTime; if (team == Teams.Enemy)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
         Idle();
-        currentControll = maxControllTime;
     }
 
     public void Start()

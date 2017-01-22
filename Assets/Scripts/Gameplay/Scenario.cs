@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 public class Scenario : MonoBehaviour
 {
     public float resourcesCounter;
-    public float maxResources = 100f;
+    public float maxResources = 10f;
     public GameObject mainTower;
     private List<SquadAI> squadList;
     private bool ending;
@@ -41,7 +41,7 @@ public class Scenario : MonoBehaviour
     {
         if (!ending)
         {
-            if (resourcesCounter <= 0 || !mainTower.GetComponent<TowerAI>().IsPowered())
+            if (resourcesCounter <= 0 || mainTower.GetComponent<TowerAI>().currentPowerLevel <= 0f)
             {
                 GameplayManager.GetInstance().isControllEnabled = false;
                 ending = true;
