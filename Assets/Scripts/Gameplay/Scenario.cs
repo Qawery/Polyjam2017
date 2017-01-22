@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 public class Scenario : MonoBehaviour
 {
     public float resourcesCounter;
-    public float maxResources = 100f;
+    public float maxResources = 10f;
     public GameObject mainTower;
     private List<SquadAI> squadList;
     private bool ending;
