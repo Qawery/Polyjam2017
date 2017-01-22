@@ -29,7 +29,8 @@ public class AgentAI : AgentDefault
         Assert.IsNotNull(navMeshAgent, "Missing navMeshAgent");
         turret = GetComponentInChildren<TurretAI>();
         Assert.IsNotNull(turret, "Missing turret.");
-        currentControll = maxControllTime; if (team == Teams.Enemy)
+        currentControll = maxControllTime;
+        if (team == Teams.Enemy)
         {
             animator = GetComponentInChildren<Animator>();
         }
