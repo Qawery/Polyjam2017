@@ -19,9 +19,13 @@ public class AgentAI : AgentDefault
     private Vector3 patrolDestination;
     private bool toPatrolDestination = false;
 
+    private Vector3 previousPosition;
+    private Animator animator;
+
     public override void Awake()
     {
         base.Awake();
+        animator = GetComponentInChildren<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         Assert.IsNotNull(navMeshAgent, "Missing navMeshAgent");
         turret = GetComponentInChildren<TurretAI>();
@@ -54,6 +58,18 @@ public class AgentAI : AgentDefault
         }
         if (health.IsAlive())
         {
+            if(team == Teams.Enemy)
+            {
+                if (Vector3.Distance(previousPosition, transform.position) > 0.06f)
+                {
+                    animator.SetBool("isWalking", true);
+                }
+                else
+                {
+                    animator.SetBool("isWalking", false);
+                }
+                previousPosition = transform.position;
+            }
             turret.ManualUpdate();
             switch (state)
             {

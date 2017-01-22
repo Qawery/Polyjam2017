@@ -29,10 +29,11 @@ public class OlaTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		animator.SetBool("isWalking", true);
-		animator.SetBool("isActive", true);
+        print("LOL");
+		animator.SetBool("isWalking", true); // robaczek, czy idzie, czy stoi
+		animator.SetBool("isActive", true); // wieza - jak zdobyta to isActive=true
 		if (triggerUsed % 9 == 0) {
-			animator.SetTrigger("shoot");
+			animator.SetTrigger("shoot"); // czolg - cofanie sie dzialka
 		}
 		++triggerUsed;
 	}

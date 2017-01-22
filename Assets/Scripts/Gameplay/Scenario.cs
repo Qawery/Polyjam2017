@@ -7,14 +7,12 @@ public class Scenario : MonoBehaviour
     public float resourcesCounter;
     public float maxResources = 100f;
     public GameObject mainTower;
-    public GameObject standardEnemy;
     private List<SquadAI> squadList;
 
     public void Awake()
     {
         resourcesCounter = 0;
         Assert.IsNotNull(mainTower, "Missing mainTower");
-        Assert.IsNotNull(standardEnemy, "Missing standardEnemy");
         squadList = new List<SquadAI>();
     }
     

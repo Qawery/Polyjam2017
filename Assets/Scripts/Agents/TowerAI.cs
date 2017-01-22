@@ -13,12 +13,19 @@ public class TowerAI : MonoBehaviour
     public float fullPowerLevel = 5f;
     public float currentPowerLevel = 0f;
 
+    private bool animatorIsActive = false;
+    private Animator animator;
+
     public void Awake()
     {
         Assert.IsNotNull(powered, "Missing powered");
         Assert.IsNotNull(contested, "Missing contested");
         Assert.IsNotNull(rising, "Missing rising");
         Assert.IsNotNull(lowering, "Missing lowering");
+        animator = GetComponentInChildren<Animator>();
+        Assert.IsNotNull(animator, "Missing animator");
+        animator.SetBool("isActive", true);
+        animatorIsActive = true;
     }
 
     public void Start()
@@ -35,14 +42,22 @@ public class TowerAI : MonoBehaviour
         AnalyzeControll();
         if (currentPowerLevel >= fullPowerLevel)
         {
-            //TODO: włączyć efekty zasilania
             GameplayManager.GetInstance().scenario.IncreaseResources(Time.deltaTime);
             ControllPulse();
             powered.SetActive(true);
+            if(!animatorIsActive)
+            {
+                animator.SetBool("isActive", true);
+                animatorIsActive = true;
+            }
         }
         else
         {
-            //TODO: wyłączyć efekty zasilania
+            if (animatorIsActive)
+            {
+                animator.SetBool("isActive", false);
+                animatorIsActive = false;
+            }
         }
     }
 

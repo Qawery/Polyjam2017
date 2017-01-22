@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 public class WaveManager : MonoBehaviour
 {
     public GameObject standardEnemy;
+    public GameObject fastEnemy;
     public List<AgentSpawner> northAgentSpawners;
     public List<AgentSpawner> southAgentSpawners;
     public List<AgentSpawner> westAgentSpawners;
@@ -18,6 +19,7 @@ public class WaveManager : MonoBehaviour
     {
         waveTimer = 0;
         Assert.IsNotNull(standardEnemy, "Missing standardEnemy");
+        Assert.IsNotNull(fastEnemy, "Missing fastEnemy");
         Assert.IsNotNull(northAgentSpawners, "Missing northAgentSpawners");
         Assert.IsTrue(northAgentSpawners.Count >= 1, "Too little northAgentSpawners");
         Assert.IsNotNull(southAgentSpawners, "Missing southAgentSpawners");
@@ -81,17 +83,17 @@ public class WaveManager : MonoBehaviour
         //TODO: programistyczne zapisuwanie fal do stworzenia
 
         lastWave = new WaveInfo();
-        lastWave.waveTime = 5f;
-        BatchInfo newBatch = new BatchInfo(standardEnemy, 3, new Vector3(0, 0, -5));
+        lastWave.waveTime = 10f;
+        BatchInfo newBatch = new BatchInfo(fastEnemy, 10, new Vector3(0, 0, -5));
         newBatch.batchDirection = BatchDirection.North;
         lastWave.batchesToSpawn.Add(newBatch);
-        newBatch = new BatchInfo(standardEnemy, 3, new Vector3(0, 0, 5));
+        newBatch = new BatchInfo(fastEnemy, 10, new Vector3(0, 0, 5));
         newBatch.batchDirection = BatchDirection.South;
         lastWave.batchesToSpawn.Add(newBatch);
-        newBatch = new BatchInfo(standardEnemy, 3, new Vector3(-5, 0, 0));
+        newBatch = new BatchInfo(fastEnemy, 10, new Vector3(-5, 0, 0));
         newBatch.batchDirection = BatchDirection.East;
         lastWave.batchesToSpawn.Add(newBatch);
-        newBatch = new BatchInfo(standardEnemy, 3, new Vector3(5, 0, 0));
+        newBatch = new BatchInfo(fastEnemy, 10, new Vector3(5, 0, 0));
         newBatch.batchDirection = BatchDirection.West;
         lastWave.batchesToSpawn.Add(newBatch);
     }

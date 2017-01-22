@@ -2,10 +2,15 @@
 
 public class Health : MonoBehaviour
 {
-    public float MaxHealth;
+    public float maxHealth;
     public float currentHealth;
     public float regenerationRate;
     private bool isAlive = true;
+
+    public void Start()
+    {
+        currentHealth = maxHealth;
+    }
 
     public void Update()
     {
@@ -17,9 +22,9 @@ public class Health : MonoBehaviour
         if(isAlive)
         {
             currentHealth += ammount;
-            if(currentHealth > MaxHealth)
+            if(currentHealth > maxHealth)
             {
-                currentHealth = MaxHealth;
+                currentHealth = maxHealth;
             }
             if (currentHealth <= 0)
             {
