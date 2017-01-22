@@ -40,7 +40,7 @@ public class TowerAI : MonoBehaviour
         lowering.SetActive(false);
         contested.SetActive(false);
         AnalyzeControll();
-        if (currentPowerLevel >= fullPowerLevel)
+        if (currentPowerLevel >= fullPowerLevel || (GameplayManager.GetInstance().scenario.mainTower == this && currentPowerLevel > 0))
         {
             GameplayManager.GetInstance().scenario.IncreaseResources(Time.deltaTime);
             ControllPulse();
@@ -123,7 +123,7 @@ public class TowerAI : MonoBehaviour
 
     public bool IsPowered()
     {
-        if (currentPowerLevel >= fullPowerLevel)
+        if (currentPowerLevel >= fullPowerLevel || (GameplayManager.GetInstance().scenario.mainTower == this && currentPowerLevel > 0))
         {
             return true;
         }
