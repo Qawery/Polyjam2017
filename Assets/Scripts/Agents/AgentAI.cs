@@ -9,6 +9,8 @@ public enum AgentInternalState
 
 public class AgentAI : AgentDefault
 {
+    public float maxControllTime = 2f;
+    private float currentControll;
     private float distanceToleration = 3f;
     private NavMeshAgent navMeshAgent;
     private TurretAI turret;
@@ -25,6 +27,7 @@ public class AgentAI : AgentDefault
         turret = GetComponentInChildren<TurretAI>();
         Assert.IsNotNull(turret, "Missing turret.");
         Idle();
+        currentControll = maxControllTime;
     }
 
     public void Start()
@@ -37,6 +40,18 @@ public class AgentAI : AgentDefault
 
     public void Update()
     {
+        if (team == Teams.Player)
+        { 
+            if (currentControll > 0)
+            {
+                currentControll -= Time.deltaTime;
+                lowPower.SetActive(false);
+            }
+            else
+            {
+                lowPower.SetActive(true); 
+            }
+        }
         if (health.IsAlive())
         {
             turret.ManualUpdate();
@@ -126,7 +141,14 @@ public class AgentAI : AgentDefault
                 navMeshAgent.SetDestination(patrolDestination);
                 if (Vector3.Distance(transform.position, patrolDestination) <= distanceToleration)
                 {
-                    toPatrolDestination = false;
+                    if(team == Teams.Player && currentControll > 0)
+                    {
+                        toPatrolDestination = false;
+                    }
+                    else if (team != Teams.Player)
+                    {
+                        toPatrolDestination = false;
+                    }
                 }
             }
             else
@@ -134,7 +156,14 @@ public class AgentAI : AgentDefault
                 navMeshAgent.SetDestination(destination);
                 if (Vector3.Distance(transform.position, destination) <= distanceToleration)
                 {
-                    toPatrolDestination = true;
+                    if (team == Teams.Player && currentControll > 0)
+                    {
+                        toPatrolDestination = true;
+                    }
+                    else if (team != Teams.Player)
+                    {
+                        toPatrolDestination = true;
+                    }
                 }
             }
         }
@@ -199,9 +228,8 @@ public class AgentAI : AgentDefault
 
     public override bool IsAvailableToSelect()
     {
-        if(health.IsAlive() && team == Teams.Player)
+        if(health.IsAlive() && team == Teams.Player && currentControll > 0)
         {
-            //TODO sprawdzanie zasięgu radiowego
             return true;
         }
         return false;
@@ -210,5 +238,10 @@ public class AgentAI : AgentDefault
     public AgentDefault GetCurrentTarget()
     {
         return turret.GetTemporaryTarget();
+    }
+
+    public void RecieveControllPulse()
+    {
+        currentControll = maxControllTime;
     }
 }

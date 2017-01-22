@@ -4,34 +4,50 @@ using UnityEngine.Assertions;
 
 public class Scenario : MonoBehaviour
 {
+    public float resourcesCounter;
+    public float maxResources = 100f;
+    public GameObject mainTower;
     public GameObject standardEnemy;
-    public List<AgentSpawner> spawnerList;
     private List<SquadAI> squadList;
 
     public void Awake()
     {
+        resourcesCounter = 0;
+        Assert.IsNotNull(mainTower, "Missing mainTower");
         Assert.IsNotNull(standardEnemy, "Missing standardEnemy");
-        Assert.IsNotNull(spawnerList, "Missing spawnerList");
-        Assert.IsFalse(spawnerList.Count <= 0, "Too little spawners");
         squadList = new List<SquadAI>();
     }
     
 	public void Start ()
     {
-		foreach(AgentSpawner spawner in spawnerList)
-        {
-            spawner.CreateBatchToSpawn(standardEnemy, 3, new Vector3(spawner.transform.position.x + 5f, spawner.transform.position.y, spawner.transform.position.z));
-        }
+        mainTower.GetComponent<TowerAI>().currentPowerLevel = mainTower.GetComponent<TowerAI>().fullPowerLevel;
 	}
 
     public void Update()
     {
+        VictoryConditions();
         CleanUpCorpses();
         foreach (SquadAI squad in squadList)
         {
             if(squad.isReady)
             {
-                squad.SetDestination(new Vector3(0, 0, 0));
+                DetermineNextTowerToAttack(squad);
+            }
+        }
+    }
+
+    private void VictoryConditions()
+    {
+        if(!mainTower.GetComponent<TowerAI>().IsPowered())
+        {
+            GameplayManager.GetInstance().isControllEnabled = false;
+            //TODO: Przegrana
+        }
+        else
+        {
+            if(resourcesCounter >= maxResources)
+            {
+                //TODO: Wygrana
             }
         }
     }
@@ -52,6 +68,12 @@ public class Scenario : MonoBehaviour
         }
     }
 
+    private void DetermineNextTowerToAttack(SquadAI squad)
+    {
+        //TODO: Wybranie wieży do zaatakowania dla oddziału
+        squad.SetDestination(mainTower.transform.position);
+    }
+
     public void AddSquad(SquadAI newSquad)
     {
         squadList.Add(newSquad);
@@ -60,5 +82,15 @@ public class Scenario : MonoBehaviour
     public List<SquadAI> GetSquadAI_List()
     {
         return squadList;
+    }
+
+
+    public void IncreaseResources(float ammount)
+    {
+        resourcesCounter += ammount;
+        if(resourcesCounter > maxResources)
+        {
+            resourcesCounter = maxResources;
+        }
     }
 }

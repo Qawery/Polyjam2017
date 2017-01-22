@@ -8,8 +8,8 @@ public class AgentSpawner : MonoBehaviour
     public float spawnBoxHalfWidth = 2.5f;
     public float spawnBoxHalfHeight = 2.5f;
     public float checkSphereRadius = 1;
-    private List<BatchInfo> batchesToSpawn;
     private List<Vector3> possibleSpawnLocations;
+    private List<BatchInfo> batchesToSpawn;
 
     public void Awake()
     {
@@ -54,12 +54,15 @@ public class AgentSpawner : MonoBehaviour
             if(batchesToSpawn[0].remainingNumber > 0)
             {
                 GameObject spawnedAgent = (GameObject) Instantiate(batchesToSpawn[0].unitType, possibleSpawnLocations[0], transform.rotation) as GameObject;
-                if(batchesToSpawn[0].squadAI == null)
+                if (spawnedAgent.GetComponent<AgentAI>().team == Teams.Enemy)
                 {
-                    batchesToSpawn[0].squadAI = ((GameObject)Instantiate(exampleSquadAI, transform.position, transform.rotation) as GameObject).GetComponent<SquadAI>();
-                    batchesToSpawn[0].squadAI.SetTeam(spawnedAgent.GetComponent<AgentAI>().team);
+                    if (batchesToSpawn[0].squadAI == null)
+                    {
+                        batchesToSpawn[0].squadAI = ((GameObject)Instantiate(exampleSquadAI, transform.position, transform.rotation) as GameObject).GetComponent<SquadAI>();
+                        batchesToSpawn[0].squadAI.SetTeam(spawnedAgent.GetComponent<AgentAI>().team);
+                    }
+                    batchesToSpawn[0].squadAI.AddAgent(spawnedAgent.GetComponent<AgentAI>());
                 }
-                batchesToSpawn[0].squadAI.AddAgent(spawnedAgent.GetComponent<AgentAI>());
                 possibleSpawnLocations.RemoveAt(0);
                 batchesToSpawn[0].remainingNumber--;
             }
@@ -69,6 +72,11 @@ public class AgentSpawner : MonoBehaviour
                 batchesToSpawn.RemoveAt(0);
             }
         }
+    }
+
+    public void CreateBatchToSpawn(BatchInfo batchInfo)
+    {
+        batchesToSpawn.Add(new BatchInfo(batchInfo.unitType, batchInfo.remainingNumber, batchInfo.destination));
     }
 
     public void CreateBatchToSpawn(GameObject unitType, int number, Vector3 destination)

@@ -22,57 +22,62 @@ public class InputManager : MonoBehaviour
 
     public void Update()
     {
-        CleanUpCorpses();
-        if (Input.GetKey(KeyCode.LeftAlt))
+        //TODO: nie klikanie w przyciski
+        // UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()
+        if (GameplayManager.GetInstance().isControllEnabled)
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                LMB_UpPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
-                float minX = Mathf.Min(LMB_UpPosition.x, LMB_DownPosition.x);
-                float maxX = Mathf.Max(LMB_UpPosition.x, LMB_DownPosition.x);
-                float minZ = Mathf.Min(LMB_UpPosition.z, LMB_DownPosition.z);
-                float maxZ = Mathf.Max(LMB_UpPosition.z, LMB_DownPosition.z);
-                foreach (AgentAI agent in GameplayManager.GetInstance().allPlayerAgents)
-                {
-                    if(agent.transform.position.x < maxX && agent.transform.position.x > minX && agent.transform.position.z < maxZ && agent.transform.position.z > minZ)
-                    {
-                        TryToSelect(agent);
-                    }
-                }
-            }
-            else if (Input.GetMouseButtonDown(0))
-            {
-                LMB_DownPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
-            }
-            else if (Input.GetMouseButton(0))
-            {
-                //TODO: narysowanie prostokąta
-                //currentCursorPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
-            }
-        }
-        else
-        {
-            DetermineUnitOrder();
-            if (Input.GetKey(KeyCode.LeftShift))
+            CleanUpCorpses();
+            if (Input.GetKey(KeyCode.LeftAlt))
             {
                 if (Input.GetMouseButtonUp(0))
                 {
-                    LeftMouseButtonShift();
+                    LMB_UpPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
+                    float minX = Mathf.Min(LMB_UpPosition.x, LMB_DownPosition.x);
+                    float maxX = Mathf.Max(LMB_UpPosition.x, LMB_DownPosition.x);
+                    float minZ = Mathf.Min(LMB_UpPosition.z, LMB_DownPosition.z);
+                    float maxZ = Mathf.Max(LMB_UpPosition.z, LMB_DownPosition.z);
+                    foreach (AgentAI agent in GameplayManager.GetInstance().allPlayerAgents)
+                    {
+                        if (agent.transform.position.x < maxX && agent.transform.position.x > minX && agent.transform.position.z < maxZ && agent.transform.position.z > minZ)
+                        {
+                            TryToSelect(agent);
+                        }
+                    }
                 }
-                else if (Input.GetMouseButtonUp(1))
+                else if (Input.GetMouseButtonDown(0))
                 {
-                    RightMouseButtonShift();
+                    LMB_DownPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
+                }
+                else if (Input.GetMouseButton(0))
+                {
+                    //TODO: narysowanie prostokąta
+                    //currentCursorPosition = GameplayManager.GetInstance().cameraControll.GetCamera().ScreenToWorldPoint(Input.mousePosition);
                 }
             }
             else
             {
-                if (Input.GetMouseButtonUp(0))
+                DetermineUnitOrder();
+                if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    LeftMouseButtonOnly();
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        LeftMouseButtonShift();
+                    }
+                    else if (Input.GetMouseButtonUp(1))
+                    {
+                        RightMouseButtonShift();
+                    }
                 }
-                else if (Input.GetMouseButtonUp(1))
+                else
                 {
-                    RightMouseButtonOnly();
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        LeftMouseButtonOnly();
+                    }
+                    else if (Input.GetMouseButtonUp(1))
+                    {
+                        RightMouseButtonOnly();
+                    }
                 }
             }
         }
@@ -85,6 +90,11 @@ public class InputManager : MonoBehaviour
         {
             if (selectedUnits[i] == null)
             {
+                selectedUnits.RemoveAt(i);
+            }
+            else if (!selectedUnits[i].IsAvailableToSelect())
+            {
+                selectedUnits[i].DeactivateHighlight();
                 selectedUnits.RemoveAt(i);
             }
             else

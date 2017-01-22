@@ -11,7 +11,9 @@ public class GameplayManager : MonoBehaviour
     public InputManager inputManager;
     public Scenario scenario;
     public List<AgentAI> allPlayerAgents;
-    
+    public List<TowerAI> towerList;
+    public bool isControllEnabled;
+
     private GameplayManager()
     {
     }
@@ -19,6 +21,7 @@ public class GameplayManager : MonoBehaviour
     public void Awake()
     {
         instance = this;
+        isControllEnabled = true;
         Assert.IsNotNull(cameraControll, "Missing cameraControll.");
         Assert.IsNotNull(cameraBounds, "Missing cameraBounds");
         Assert.IsNotNull(gui, "Missing GUI");
@@ -27,6 +30,7 @@ public class GameplayManager : MonoBehaviour
         scenario = GetComponent<Scenario>();
         Assert.IsNotNull(scenario, "Missing scenario");
         allPlayerAgents = new List<AgentAI>();
+        towerList = new List<TowerAI>();
     }
 
     public static GameplayManager GetInstance()

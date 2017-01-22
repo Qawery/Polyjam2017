@@ -10,6 +10,7 @@ public class AgentDefault : MonoBehaviour
 {
     public Teams team;
     public GameObject highlight;
+    public GameObject lowPower;
     protected Health health;
 
     public virtual void Awake()
