@@ -1,17 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public enum SquadState
-{
-    Deploying, Waiting, Moving, Attacking
-}
-
 public class SquadAI : MonoBehaviour
 {
     private float goalTolerance = 3f;
     private Teams team;
     private List<AgentAI> agentsInSquad;
-    private SquadState currentState;
     private Vector3 currentDestination;
     public bool isReady;
 
@@ -76,7 +70,7 @@ public class SquadAI : MonoBehaviour
     {
         foreach (AgentAI agent in agentsInSquad)
         {
-            if (Vector3.Distance(agent.transform.position, currentDestination) <= goalTolerance)
+            if (agent != null && Vector3.Distance(agent.transform.position, currentDestination) <= goalTolerance)
             {
                 return true;
             }
@@ -88,7 +82,7 @@ public class SquadAI : MonoBehaviour
     {
         foreach (AgentAI agent in agentsInSquad)
         {
-            if(agent.GetCurrentTarget() != null)
+            if(agent != null && agent.GetCurrentTarget() != null)
             {
                 return true;
             }
@@ -102,15 +96,18 @@ public class SquadAI : MonoBehaviour
         List<AgentAI> agentsWithoutTarget = new List<AgentAI>();
         foreach (AgentAI agent in agentsInSquad)
         {
-            if (agent.GetCurrentTarget() == null)
+            if (agent != null)
             {
-                agentsWithoutTarget.Add(agent);
-            }
-            else
-            {
-                if (randomTarget == null)
+                if (agent.GetCurrentTarget() == null)
                 {
-                    randomTarget = agent.GetCurrentTarget();
+                    agentsWithoutTarget.Add(agent);
+                }
+                else
+                {
+                    if (randomTarget == null)
+                    {
+                        randomTarget = agent.GetCurrentTarget();
+                    }
                 }
             }
         }
@@ -125,6 +122,7 @@ public class SquadAI : MonoBehaviour
         if (newAgent != null && newAgent.team == team && newAgent.GetHealth().IsAlive())
         {
             agentsInSquad.Add(newAgent);
+            newAgent.AttackMove(currentDestination);
         }
     }
 
@@ -132,7 +130,10 @@ public class SquadAI : MonoBehaviour
     {
         foreach (AgentAI agent in agentsInSquad)
         {
-            agent.AttackMove(currentDestination);
+            if (agent != null)
+            {
+                agent.AttackMove(currentDestination);
+            }
         }
     }
 
@@ -140,13 +141,23 @@ public class SquadAI : MonoBehaviour
     {
         foreach (AgentAI agent in agentsInSquad)
         {
-            agent.AttackMove(agentsInSquad[0].transform.position);
+            if (agent != null)
+            {
+                agent.AttackMove(agentsInSquad[0].transform.position);
+            }
         }
     }
 
     public void SetDestination(Vector3 newDestination)
     {
         currentDestination = newDestination;
+        foreach(AgentAI agent in agentsInSquad)
+        {
+            if( agent != null)
+            {
+                agent.AttackMove(currentDestination);
+            }
+        }
     }
 
     public int GetSquadSize()

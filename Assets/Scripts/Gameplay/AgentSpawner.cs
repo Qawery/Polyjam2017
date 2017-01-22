@@ -60,6 +60,7 @@ public class AgentSpawner : MonoBehaviour
                     {
                         batchesToSpawn[0].squadAI = ((GameObject)Instantiate(exampleSquadAI, transform.position, transform.rotation) as GameObject).GetComponent<SquadAI>();
                         batchesToSpawn[0].squadAI.SetTeam(spawnedAgent.GetComponent<AgentAI>().team);
+                        batchesToSpawn[0].squadAI.SetDestination(transform.position + batchesToSpawn[0].destination);
                     }
                     batchesToSpawn[0].squadAI.AddAgent(spawnedAgent.GetComponent<AgentAI>());
                 }
