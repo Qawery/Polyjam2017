@@ -8,10 +8,12 @@ public class Scenario : MonoBehaviour
     public float maxResources = 100f;
     public GameObject mainTower;
     private List<SquadAI> squadList;
+    private bool ending;
 
     public void Awake()
     {
-        resourcesCounter = 0;
+        ending = false;
+        resourcesCounter = maxResources/2;
         Assert.IsNotNull(mainTower, "Missing mainTower");
         squadList = new List<SquadAI>();
     }
@@ -23,7 +25,7 @@ public class Scenario : MonoBehaviour
 
     public void Update()
     {
-        VictoryConditions();
+        EndingConditions();
         CleanUpCorpses();
         foreach (SquadAI squad in squadList)
         {
@@ -34,19 +36,22 @@ public class Scenario : MonoBehaviour
         }
     }
 
-    private void VictoryConditions()
+    private void EndingConditions()
     {
-        if(!mainTower.GetComponent<TowerAI>().IsPowered())
+        if (!ending)
         {
-            GameplayManager.GetInstance().isControllEnabled = false;
-            //TODO: Przegrana
-        }
-        else
-        {
-            if(resourcesCounter >= maxResources)
+            if (resourcesCounter <= 0 || !mainTower.GetComponent<TowerAI>().IsPowered())
             {
+                GameplayManager.GetInstance().isControllEnabled = false;
+                ending = true;
+                //TODO: Przegrana
+            }
+            else if (resourcesCounter >= maxResources)
+            {
+                ending = true;
                 //TODO: Wygrana
             }
+            IncreaseResources(-5 * Time.deltaTime);
         }
     }
 
@@ -68,8 +73,20 @@ public class Scenario : MonoBehaviour
 
     private void DetermineNextTowerToAttack(SquadAI squad)
     {
-        //TODO: Wybranie wieży do zaatakowania dla oddziału
-        squad.SetDestination(mainTower.transform.position);
+        List<TowerAI> towersLeft = new List<TowerAI>();
+        foreach(TowerAI tower in GameplayManager.GetInstance().towerList)
+        {
+            if(tower.IsPowered())
+            {
+                towersLeft.Add(tower);
+            }
+        }
+        if (towersLeft.Count > 0)
+        {
+            float random = Random.Range(0, towersLeft.Count - 0.1f);
+            int index = (int) Mathf.Floor(random);
+            squad.SetDestination(towersLeft[index].transform.position);
+        }
     }
 
     public void AddSquad(SquadAI newSquad)
@@ -82,13 +99,15 @@ public class Scenario : MonoBehaviour
         return squadList;
     }
 
-
     public void IncreaseResources(float ammount)
     {
-        resourcesCounter += ammount;
-        if(resourcesCounter > maxResources)
+        if (!ending)
         {
-            resourcesCounter = maxResources;
+            resourcesCounter += ammount;
+            if (resourcesCounter > maxResources)
+            {
+                resourcesCounter = maxResources;
+            }
         }
     }
 }
