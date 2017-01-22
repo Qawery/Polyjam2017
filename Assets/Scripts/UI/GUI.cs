@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 public class GUI : MonoBehaviour
 {
+    public Slider powerSlider;
     public Text victoryText;
     public Text defeatText;
     public Button moveButton;
@@ -14,13 +15,14 @@ public class GUI : MonoBehaviour
     public float selectedOffset = 20f;
     private float originalY;
     private List<Button> allButtons;
-
+    
     public void Awake()
     {
         Assert.IsNotNull(victoryText, "Missing victoryText");
         victoryText.enabled = false;
         Assert.IsNotNull(defeatText, "Missing defeatText");
         defeatText.enabled = false;
+        Assert.IsNotNull(powerSlider, "Missing powerSlider");
         allButtons = new List<Button>();
         Assert.IsNotNull(moveButton, "Missing moveButton");
         allButtons.Add(moveButton);
@@ -34,9 +36,16 @@ public class GUI : MonoBehaviour
         HideAll();
     }
 
+    public void Start()
+    {
+        powerSlider.maxValue = GameplayManager.GetInstance().scenario.maxResources;
+        powerSlider.minValue = 0;
+    }
+
     public void Update()
     {
-        if(GameplayManager.GetInstance().inputManager.selectedUnits.Count > 0)
+        powerSlider.value = GameplayManager.GetInstance().scenario.resourcesCounter;
+        if (GameplayManager.GetInstance().inputManager.selectedUnits.Count > 0)
         {
             ShowAll();
             UnselectAll();
